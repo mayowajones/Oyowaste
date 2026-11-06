@@ -33,6 +33,27 @@ npm run dev:client
 
 5. Open the frontend at `http://localhost:3000`
 
+## Deploying on Vercel
+
+The frontend and backend stay in separate folders and are deployed as two Vercel projects connected to this same GitHub repository.
+
+### Frontend project
+
+1. Import the repository in Vercel and set **Root Directory** to `client`.
+2. Use the Vite framework preset, build command `npm run build`, and output directory `dist`.
+3. Add the environment variable `VITE_API_URL` with the base URL of the deployed backend, for example `https://oyowaste-api.vercel.app` (no trailing slash).
+4. Deploy or redeploy after adding the environment variable. `client/vercel.json` sends frontend routes such as `/operations` back to the app entry point.
+
+### Backend project
+
+1. Create a second Vercel project from the same GitHub repository and set **Root Directory** to `server`.
+2. Use the Node.js/Other framework preset. Vercel serves the Express application through `server/api/[...path].js`; no custom output directory is needed.
+3. Add backend environment variables in the Vercel project settings. Set `SUPER_ADMIN_EMAIL` and `SUPER_ADMIN_PASSWORD` for operations sign-in. Add `PAYSTACK_SECRET_KEY` only when Paystack is configured; optional settings include `CLIENT_URL`, `PAYMENT_CALLBACK_URL`, `OPS_STAFF_JSON`, and service pricing/city variables.
+4. Deploy the backend, copy its public URL into the frontend's `VITE_API_URL`, then redeploy the frontend.
+5. If using Paystack webhooks, configure the endpoint as `https://<backend-domain>/api/payments/webhook`.
+
+Do not commit `.env` files or put server secrets in frontend variables. This scaffold stores users, requests, sessions, and operations data in memory, so that data is not durable or shared across serverless invocations. Add persistent database and session storage before using the deployment for real operations.
+
 ## Folder details
 
 - Frontend uses Vite, React, and React Router.

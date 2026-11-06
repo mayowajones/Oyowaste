@@ -560,4 +560,8 @@ function startServer(port) {
   });
 }
 
-startServer(PORT);
+module.exports = app;
+
+if (require.main === module) {
+  startServer(PORT);
+}
